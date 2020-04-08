@@ -6,7 +6,7 @@ from typing import (
 import json
 import os
 
-from src.data_model import StarSigns, CompatibilityScoreMark, Personality
+from src.data_model import StarSigns, CompatibilityScoreMark, Personality, Species
 
 _personality_comp_score_matrix = defaultdict(dict)
 
@@ -59,6 +59,33 @@ def get_compatibility_score_by_unicode_sign(sign):
 
 def calculate_compatibility_score_by_personality(p1, p2):
     return _personality_comp_score_matrix[p1][p2]
+
+
+def calculate_compatibility_score_by_species(s1, s2):
+    def check_species(chk1, chk2):
+        return (s1 == chk1 and s2 == chk2) or (s2 == chk1 and s1 == chk2)
+
+    if check_species(Species.Bear, Species.Cub) or \
+            check_species(Species.Bull, Species.Cow) or \
+            check_species(Species.Cat, Species.Tiger) or \
+            check_species(Species.Dog, Species.Wolf) or \
+            check_species(Species.Goat, Species.Sheep) or \
+            check_species(Species.Kangaroo, Species.Koala):
+        return CompatibilityScoreMark.HEART
+    elif s1 == s2 or \
+            check_species(Species.Deer, Species.Horse) or \
+            check_species(Species.Hamster, Species.Squirrel) or \
+            check_species(Species.Hamster, Species.Mouse) or \
+            check_species(Species.Mouse, Species.Squirrel):
+        return CompatibilityScoreMark.DIAMOND
+    elif check_species(Species.Cat, Species.Mouse) or \
+            check_species(Species.Cat, Species.Hamster) or \
+            check_species(Species.Dog, Species.Gorilla) or \
+            check_species(Species.Dog, Species.Monkey) or \
+            check_species(Species.Sheep, Species.Wolf):
+        return CompatibilityScoreMark.CROSS
+    else:
+        return CompatibilityScoreMark.CLOVER
 
 
 def load_personality_compatibility_data():

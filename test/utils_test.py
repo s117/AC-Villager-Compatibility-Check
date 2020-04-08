@@ -1,9 +1,7 @@
 import sys
 import unittest
 
-from src.data_model import StarSigns, CompatibilityScoreMark, Personality
-from src.utils import get_star_sign_by_birthday, get_compatibility_score_by_unicode_sign, \
-    calculate_compatibility_score_by_personality
+from src.data_model import StarSigns, CompatibilityScoreMark, Personality, Species
 
 
 class DebuggableTestCase(unittest.TestCase):
@@ -34,6 +32,7 @@ class UtilsTestCase(DebuggableTestCase):
             StarSigns.Sagittarius: [(11, 22), (11, 25), (11, 30), (12, 1), (12, 10), (12, 21)],
             StarSigns.Capricorn: [(12, 22), (12, 26), (12, 31), (1, 1), (1, 12), (1, 19)],
         }
+        from src.utils import get_star_sign_by_birthday
 
         for expected_ss, births in test_list.items():
             for birth in births:
@@ -41,40 +40,93 @@ class UtilsTestCase(DebuggableTestCase):
                 self.assertEqual(expected_ss, actual_ss)
 
     def test_b_get_compatibility_score_by_unicode_sign(self):
+        from src.utils import get_compatibility_score_by_unicode_sign
         self.assertEqual(get_compatibility_score_by_unicode_sign("♥"), CompatibilityScoreMark.HEART)
         self.assertEqual(get_compatibility_score_by_unicode_sign("♦"), CompatibilityScoreMark.DIAMOND)
         self.assertEqual(get_compatibility_score_by_unicode_sign("♣"), CompatibilityScoreMark.CLOVER)
         self.assertEqual(get_compatibility_score_by_unicode_sign("×"), CompatibilityScoreMark.CROSS)
 
     def test_c_sanity_test_calculate_compatibility_score_by_personality(self):
+        def check(p1, p2):
+            from src.utils import calculate_compatibility_score_by_personality
+            r1 = calculate_compatibility_score_by_personality(p1, p2)
+            r2 = calculate_compatibility_score_by_personality(p2, p1)
+            self.assertEqual(r1, r2)
+            return r1
+
         self.assertEqual(
-            calculate_compatibility_score_by_personality(Personality.Normal, Personality.Normal),
+            check(Personality.Normal, Personality.Normal),
             CompatibilityScoreMark.CLOVER
         )
         self.assertEqual(
-            calculate_compatibility_score_by_personality(Personality.Uchi, Personality.Uchi),
+            check(Personality.Uchi, Personality.Uchi),
             CompatibilityScoreMark.HEART
         )
         self.assertEqual(
-            calculate_compatibility_score_by_personality(Personality.Snooty, Personality.Snooty),
+            check(Personality.Snooty, Personality.Snooty),
             CompatibilityScoreMark.CLOVER
         )
         self.assertEqual(
-            calculate_compatibility_score_by_personality(Personality.Uchi, Personality.Normal),
+            check(Personality.Uchi, Personality.Normal),
             CompatibilityScoreMark.DIAMOND
         )
         self.assertEqual(
-            calculate_compatibility_score_by_personality(Personality.Cranky, Personality.Peppy),
+            check(Personality.Cranky, Personality.Peppy),
             CompatibilityScoreMark.CROSS
         )
 
+    def test_d_sanity_test_calculate_compatibility_score_by_species(self):
+        def check(s1, s2):
+            from src.utils import calculate_compatibility_score_by_species
+            r1 = calculate_compatibility_score_by_species(s1, s2)
+            r2 = calculate_compatibility_score_by_species(s2, s1)
+            self.assertEqual(r1, r2)
+            return r1
+
         self.assertEqual(
-            calculate_compatibility_score_by_personality(Personality.Uchi, Personality.Normal),
-            calculate_compatibility_score_by_personality(Personality.Normal, Personality.Uchi)
+            check(Species.Bear, Species.Cub), CompatibilityScoreMark.HEART
         )
         self.assertEqual(
-            calculate_compatibility_score_by_personality(Personality.Cranky, Personality.Peppy),
-            calculate_compatibility_score_by_personality(Personality.Peppy, Personality.Cranky)
+            check(Species.Dog, Species.Wolf), CompatibilityScoreMark.HEART
+        )
+        self.assertEqual(
+            check(Species.Kangaroo, Species.Koala), CompatibilityScoreMark.HEART
+        )
+
+        self.assertEqual(
+            check(Species.Pig, Species.Pig), CompatibilityScoreMark.DIAMOND
+        )
+        self.assertEqual(
+            check(Species.Deer, Species.Horse), CompatibilityScoreMark.DIAMOND
+        )
+        self.assertEqual(
+            check(Species.Hamster, Species.Mouse), CompatibilityScoreMark.DIAMOND
+        )
+        self.assertEqual(
+            check(Species.Mouse, Species.Squirrel), CompatibilityScoreMark.DIAMOND
+        )
+
+        self.assertEqual(
+            check(Species.Cat, Species.Mouse), CompatibilityScoreMark.CROSS
+        )
+        self.assertEqual(
+            check(Species.Cat, Species.Hamster), CompatibilityScoreMark.CROSS
+        )
+        self.assertEqual(
+            check(Species.Sheep, Species.Wolf), CompatibilityScoreMark.CROSS
+        )
+
+        self.assertEqual(
+            check(Species.Penguin, Species.Sheep), CompatibilityScoreMark.CLOVER
+        )
+        self.assertEqual(
+            check(Species.Squirrel, Species.Octopus), CompatibilityScoreMark.CLOVER
+        )
+        self.assertEqual(
+            check(Species.Hamster, Species.Wolf), CompatibilityScoreMark.CLOVER
+        )
+        self.assertEqual(
+            check(Species.Deer, Species.Ostrich), CompatibilityScoreMark.CLOVER
         )
 
 
