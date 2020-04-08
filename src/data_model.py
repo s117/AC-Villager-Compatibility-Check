@@ -68,6 +68,16 @@ class StarSigns(Enum):
     Pisces = auto()
 
 
+class CompatibilityScoreMark(Enum):
+    HEART = 2
+    DIAMOND = 1
+    CLOVER = 0
+    CROSS = -1
+    # Good Compatibility: 2 or more ♥, ♥♦♣, or ♥♦♦
+    # Bad Compatibility: 2 or 3 ×
+    # Average Compatibility: Any other combination.
+
+
 class VillagerData:
     def __init__(self):
         self._name = ""

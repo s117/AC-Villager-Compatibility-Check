@@ -1,0 +1,82 @@
+{
+  "Normal": {
+    "Normal": "♣",
+    "Lazy": "×",
+    "Peppy": "×",
+    "Jock": "♦",
+    "Snooty": "♥",
+    "Cranky": "♣",
+    "Smug": "♥",
+    "Uchi": "♦"
+  },
+  "Lazy": {
+    "Normal": "×",
+    "Lazy": "♥",
+    "Peppy": "♦",
+    "Jock": "×",
+    "Snooty": "♣",
+    "Cranky": "♦",
+    "Smug": "♣",
+    "Uchi": "♥"
+  },
+  "Peppy": {
+    "Normal": "×",
+    "Lazy": "♦",
+    "Peppy": "♥",
+    "Jock": "♥",
+    "Snooty": "♦",
+    "Cranky": "×",
+    "Smug": "♣",
+    "Uchi": "♣"
+  },
+  "Jock": {
+    "Normal": "♦",
+    "Lazy": "×",
+    "Peppy": "♥",
+    "Jock": "♥",
+    "Snooty": "×",
+    "Cranky": "♣",
+    "Smug": "♦",
+    "Uchi": "♣"
+  },
+  "Snooty": {
+    "Normal": "♥",
+    "Lazy": "♣",
+    "Peppy": "♦",
+    "Jock": "×",
+    "Snooty": "♣",
+    "Cranky": "♥",
+    "Smug": "♦",
+    "Uchi": "×"
+  },
+  "Cranky": {
+    "Normal": "♣",
+    "Lazy": "♦",
+    "Peppy": "×",
+    "Jock": "♣",
+    "Snooty": "♥",
+    "Cranky": "♥",
+    "Smug": "×",
+    "Uchi": "♦"
+  },
+  "Smug": {
+    "Normal": "♥",
+    "Lazy": "♣",
+    "Peppy": "♣",
+    "Jock": "♦",
+    "Snooty": "♦",
+    "Cranky": "×",
+    "Smug": "♥",
+    "Uchi": "×"
+  },
+  "Uchi": {
+    "Normal": "♦",
+    "Lazy": "♥",
+    "Peppy": "♣",
+    "Jock": "♣",
+    "Snooty": "×",
+    "Cranky": "♦",
+    "Smug": "×",
+    "Uchi": "♥"
+  }
+}
