@@ -33,7 +33,9 @@ class UtilsTestCase(DebuggableTestCase):
             StarSigns.Capricorn: [(12, 22), (12, 26), (12, 31), (1, 1), (1, 12), (1, 19)],
         }
         from src.utils import get_star_sign_by_birthday
-
+        self.assertRaises(ValueError, get_star_sign_by_birthday, (13, 1))
+        self.assertRaises(ValueError, get_star_sign_by_birthday, (-1, 0))
+        self.assertRaises(ValueError, get_star_sign_by_birthday, (0, -1))
         for expected_ss, births in test_list.items():
             for birth in births:
                 actual_ss = get_star_sign_by_birthday(birth)
@@ -41,10 +43,12 @@ class UtilsTestCase(DebuggableTestCase):
 
     def test_b_get_compatibility_score_by_unicode_sign(self):
         from src.utils import get_compatibility_score_by_unicode_sign
-        self.assertEqual(get_compatibility_score_by_unicode_sign("♥"), CompatibilityScoreMark.HEART)
-        self.assertEqual(get_compatibility_score_by_unicode_sign("♦"), CompatibilityScoreMark.DIAMOND)
-        self.assertEqual(get_compatibility_score_by_unicode_sign("♣"), CompatibilityScoreMark.CLOVER)
-        self.assertEqual(get_compatibility_score_by_unicode_sign("×"), CompatibilityScoreMark.CROSS)
+        self.assertEqual(CompatibilityScoreMark.HEART, get_compatibility_score_by_unicode_sign("♥"))
+        self.assertEqual(CompatibilityScoreMark.DIAMOND, get_compatibility_score_by_unicode_sign("♦"))
+        self.assertEqual(CompatibilityScoreMark.CLOVER, get_compatibility_score_by_unicode_sign("♣"))
+        self.assertEqual(CompatibilityScoreMark.CROSS, get_compatibility_score_by_unicode_sign("×"))
+        self.assertRaises(ValueError, get_compatibility_score_by_unicode_sign, "")
+        self.assertRaises(ValueError, get_compatibility_score_by_unicode_sign, "a")
 
     def test_c_sanity_test_calculate_compatibility_score_by_personality(self):
         def check(p1, p2):
@@ -55,24 +59,24 @@ class UtilsTestCase(DebuggableTestCase):
             return r1
 
         self.assertEqual(
-            check(Personality.Normal, Personality.Normal),
-            CompatibilityScoreMark.CLOVER
+            CompatibilityScoreMark.CLOVER,
+            check(Personality.Normal, Personality.Normal)
         )
         self.assertEqual(
-            check(Personality.Uchi, Personality.Uchi),
-            CompatibilityScoreMark.HEART
+            CompatibilityScoreMark.HEART,
+            check(Personality.Uchi, Personality.Uchi)
         )
         self.assertEqual(
-            check(Personality.Snooty, Personality.Snooty),
-            CompatibilityScoreMark.CLOVER
+            CompatibilityScoreMark.CLOVER,
+            check(Personality.Snooty, Personality.Snooty)
         )
         self.assertEqual(
-            check(Personality.Uchi, Personality.Normal),
-            CompatibilityScoreMark.DIAMOND
+            CompatibilityScoreMark.DIAMOND,
+            check(Personality.Uchi, Personality.Normal)
         )
         self.assertEqual(
-            check(Personality.Cranky, Personality.Peppy),
-            CompatibilityScoreMark.CROSS
+            CompatibilityScoreMark.CROSS,
+            check(Personality.Cranky, Personality.Peppy)
         )
 
     def test_d_sanity_test_calculate_compatibility_score_by_species(self):
@@ -84,49 +88,49 @@ class UtilsTestCase(DebuggableTestCase):
             return r1
 
         self.assertEqual(
-            check(Species.Bear, Species.Cub), CompatibilityScoreMark.HEART
+            CompatibilityScoreMark.HEART, check(Species.Bear, Species.Cub)
         )
         self.assertEqual(
-            check(Species.Dog, Species.Wolf), CompatibilityScoreMark.HEART
+            CompatibilityScoreMark.HEART, check(Species.Dog, Species.Wolf)
         )
         self.assertEqual(
-            check(Species.Kangaroo, Species.Koala), CompatibilityScoreMark.HEART
-        )
-
-        self.assertEqual(
-            check(Species.Pig, Species.Pig), CompatibilityScoreMark.DIAMOND
-        )
-        self.assertEqual(
-            check(Species.Deer, Species.Horse), CompatibilityScoreMark.DIAMOND
-        )
-        self.assertEqual(
-            check(Species.Hamster, Species.Mouse), CompatibilityScoreMark.DIAMOND
-        )
-        self.assertEqual(
-            check(Species.Mouse, Species.Squirrel), CompatibilityScoreMark.DIAMOND
+            CompatibilityScoreMark.HEART, check(Species.Kangaroo, Species.Koala)
         )
 
         self.assertEqual(
-            check(Species.Cat, Species.Mouse), CompatibilityScoreMark.CROSS
+            CompatibilityScoreMark.DIAMOND, check(Species.Pig, Species.Pig)
         )
         self.assertEqual(
-            check(Species.Cat, Species.Hamster), CompatibilityScoreMark.CROSS
+            CompatibilityScoreMark.DIAMOND, check(Species.Deer, Species.Horse)
         )
         self.assertEqual(
-            check(Species.Sheep, Species.Wolf), CompatibilityScoreMark.CROSS
+            CompatibilityScoreMark.DIAMOND, check(Species.Hamster, Species.Mouse)
+        )
+        self.assertEqual(
+            CompatibilityScoreMark.DIAMOND, check(Species.Mouse, Species.Squirrel)
         )
 
         self.assertEqual(
-            check(Species.Penguin, Species.Sheep), CompatibilityScoreMark.CLOVER
+            CompatibilityScoreMark.CROSS, check(Species.Cat, Species.Mouse)
         )
         self.assertEqual(
-            check(Species.Squirrel, Species.Octopus), CompatibilityScoreMark.CLOVER
+            CompatibilityScoreMark.CROSS, check(Species.Cat, Species.Hamster)
         )
         self.assertEqual(
-            check(Species.Hamster, Species.Wolf), CompatibilityScoreMark.CLOVER
+            CompatibilityScoreMark.CROSS, check(Species.Sheep, Species.Wolf)
+        )
+
+        self.assertEqual(
+            CompatibilityScoreMark.CLOVER, check(Species.Penguin, Species.Sheep)
         )
         self.assertEqual(
-            check(Species.Deer, Species.Ostrich), CompatibilityScoreMark.CLOVER
+            CompatibilityScoreMark.CLOVER, check(Species.Squirrel, Species.Octopus)
+        )
+        self.assertEqual(
+            CompatibilityScoreMark.CLOVER, check(Species.Hamster, Species.Wolf)
+        )
+        self.assertEqual(
+            CompatibilityScoreMark.CLOVER, check(Species.Deer, Species.Ostrich)
         )
 
 
