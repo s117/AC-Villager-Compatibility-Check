@@ -1,4 +1,14 @@
-from src.data_model import StarSigns
+from collections import defaultdict
+from typing import (
+    FrozenSet, Iterable, List, Optional, Set, Text, Tuple, Union, Any, Dict, Callable
+)
+
+import json
+import os
+
+from src.data_model import StarSigns, CompatibilityScoreMark, Personality
+
+_personality_comp_score_matrix = defaultdict(dict)
 
 
 def get_star_sign_by_birthday(birth):
@@ -32,3 +42,36 @@ def get_star_sign_by_birthday(birth):
         if birth_int in tuple_range_ss[0]:
             return tuple_range_ss[1]
     raise ValueError("Invalid birthday")
+
+
+def get_compatibility_score_by_unicode_sign(sign):
+    if sign == "♥":
+        return CompatibilityScoreMark.HEART
+    elif sign == "♦":
+        return CompatibilityScoreMark.DIAMOND
+    elif sign == "♣":
+        return CompatibilityScoreMark.CLOVER
+    elif sign == "×":
+        return CompatibilityScoreMark.CROSS
+    else:
+        return ValueError("Sign must be either ♥, ♦, ♣, or ×")
+
+
+def calculate_compatibility_score_by_personality(p1, p2):
+    return _personality_comp_score_matrix[p1][p2]
+
+
+def load_personality_compatibility_data():
+    data_dir_path = os.path.join(os.path.dirname(__file__), os.path.pardir, "data")
+    with open(os.path.join(data_dir_path, "personality_compatibility.json"), "r") as _fp:
+        data = json.load(_fp)  # type: Dict[str,Dict[str,str]]
+        for p1, p2_comp in data.items():
+            p1_enum = getattr(Personality, p1)
+            assert p1_enum
+            for p2, comp in p2_comp.items():
+                p2_enum = getattr(Personality, p2)
+                assert p2_enum
+                _personality_comp_score_matrix[p1_enum][p2_enum] = get_compatibility_score_by_unicode_sign(comp)
+
+
+load_personality_compatibility_data()

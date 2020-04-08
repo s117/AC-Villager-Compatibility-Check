@@ -1,8 +1,9 @@
 import sys
 import unittest
 
-from src.data_model import StarSigns
-from src.utils import get_star_sign_by_birthday
+from src.data_model import StarSigns, CompatibilityScoreMark, Personality
+from src.utils import get_star_sign_by_birthday, get_compatibility_score_by_unicode_sign, \
+    calculate_compatibility_score_by_personality
 
 
 class DebuggableTestCase(unittest.TestCase):
@@ -38,6 +39,43 @@ class UtilsTestCase(DebuggableTestCase):
             for birth in births:
                 actual_ss = get_star_sign_by_birthday(birth)
                 self.assertEqual(expected_ss, actual_ss)
+
+    def test_b_get_compatibility_score_by_unicode_sign(self):
+        self.assertEqual(get_compatibility_score_by_unicode_sign("♥"), CompatibilityScoreMark.HEART)
+        self.assertEqual(get_compatibility_score_by_unicode_sign("♦"), CompatibilityScoreMark.DIAMOND)
+        self.assertEqual(get_compatibility_score_by_unicode_sign("♣"), CompatibilityScoreMark.CLOVER)
+        self.assertEqual(get_compatibility_score_by_unicode_sign("×"), CompatibilityScoreMark.CROSS)
+
+    def test_c_sanity_test_calculate_compatibility_score_by_personality(self):
+        self.assertEqual(
+            calculate_compatibility_score_by_personality(Personality.Normal, Personality.Normal),
+            CompatibilityScoreMark.CLOVER
+        )
+        self.assertEqual(
+            calculate_compatibility_score_by_personality(Personality.Uchi, Personality.Uchi),
+            CompatibilityScoreMark.HEART
+        )
+        self.assertEqual(
+            calculate_compatibility_score_by_personality(Personality.Snooty, Personality.Snooty),
+            CompatibilityScoreMark.CLOVER
+        )
+        self.assertEqual(
+            calculate_compatibility_score_by_personality(Personality.Uchi, Personality.Normal),
+            CompatibilityScoreMark.DIAMOND
+        )
+        self.assertEqual(
+            calculate_compatibility_score_by_personality(Personality.Cranky, Personality.Peppy),
+            CompatibilityScoreMark.CROSS
+        )
+
+        self.assertEqual(
+            calculate_compatibility_score_by_personality(Personality.Uchi, Personality.Normal),
+            calculate_compatibility_score_by_personality(Personality.Normal, Personality.Uchi)
+        )
+        self.assertEqual(
+            calculate_compatibility_score_by_personality(Personality.Cranky, Personality.Peppy),
+            calculate_compatibility_score_by_personality(Personality.Peppy, Personality.Cranky)
+        )
 
 
 if __name__ == '__main__':
