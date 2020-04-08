@@ -6,13 +6,13 @@ from typing import (
 import json
 import os
 
-from src.data_model import StarSigns, CompatibilityScoreMark, Personality, Species
+from src.data_model import StarSigns, CompatibilityScoreMark, Personality, Species, VillagerData
 
 _personality_comp_score_matrix = defaultdict(dict)
 
 
 def get_star_sign_by_birthday(birth):
-    # type: (Tuple[int, int]) -> Optional[StarSigns]
+    # type: (Tuple[int, int]) -> StarSigns
     def birth_to_int(m, d):
         return (m << 8) | d
 
@@ -45,6 +45,7 @@ def get_star_sign_by_birthday(birth):
 
 
 def get_compatibility_score_by_unicode_sign(sign):
+    # type: (str) -> CompatibilityScoreMark
     if sign == "♥":
         return CompatibilityScoreMark.HEART
     elif sign == "♦":
@@ -58,10 +59,12 @@ def get_compatibility_score_by_unicode_sign(sign):
 
 
 def calculate_compatibility_score_by_personality(p1, p2):
+    # type: (Personality, Personality) -> CompatibilityScoreMark
     return _personality_comp_score_matrix[p1][p2]
 
 
 def calculate_compatibility_score_by_species(s1, s2):
+    # type: (Species, Species) -> CompatibilityScoreMark
     def check_species(chk1, chk2):
         return (s1 == chk1 and s2 == chk2) or (s2 == chk1 and s1 == chk2)
 
@@ -108,6 +111,7 @@ _star_sign_group_idx = {
 
 
 def calculate_compatibility_score_by_star_signs(ss1, ss2):
+    # type: (StarSigns, StarSigns) -> CompatibilityScoreMark
     ss1_gid = _star_sign_group_idx[ss1]
     ss2_gid = _star_sign_group_idx[ss2]
     if ss1_gid == ss2_gid:
