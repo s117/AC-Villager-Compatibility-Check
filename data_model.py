@@ -53,6 +53,21 @@ class Species(Enum):
     Wolf = auto()
 
 
+class StarSigns(Enum):
+    Aries = auto()
+    Taurus = auto()
+    Gemini = auto()
+    Cancer = auto()
+    Leo = auto()
+    Virgo = auto()
+    Libra = auto()
+    Scorpio = auto()
+    Sagittarius = auto()
+    Capricorn = auto()
+    Aquarius = auto()
+    Pisces = auto()
+
+
 class VillagerData:
     def __init__(self):
         self._name = ""
