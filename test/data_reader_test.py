@@ -1,8 +1,8 @@
 import sys
 import unittest
-from data_reader import VillagerDataReader, AcListerVillagerDataReader
-from data_model import Species
-from data_model import Personality
+from src.data_reader import VillagerDataReader, AcListerVillagerDataReader
+from src.data_model import Species
+from src.data_model import Personality
 
 
 class DebuggableTestCase(unittest.TestCase):

@@ -1,9 +1,9 @@
 from typing import (
-    FrozenSet, Iterable, List, Optional, Set, Text, Tuple, Union, Any, Dict, Callable
+    List, Optional, Dict
 )
 import datetime
 
-from data_model import VillagerData, Personality, Species
+from src.data_model import VillagerData, Personality, Species
 
 
 class VillagerDataReader:

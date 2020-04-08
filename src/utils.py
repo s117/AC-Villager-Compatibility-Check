@@ -1,4 +1,4 @@
-from data_model import StarSigns
+from src.data_model import StarSigns
 
 
 def get_star_sign_by_birthday(birth):

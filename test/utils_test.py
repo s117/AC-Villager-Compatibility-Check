@@ -1,8 +1,8 @@
 import sys
 import unittest
 
-from data_model import StarSigns
-from utils import get_star_sign_by_birthday
+from src.data_model import StarSigns
+from src.utils import get_star_sign_by_birthday
 
 
 class DebuggableTestCase(unittest.TestCase):
