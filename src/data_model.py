@@ -73,9 +73,38 @@ class CompatibilityScoreMark(Enum):
     DIAMOND = 1
     CLOVER = 0
     CROSS = -1
+
+    def __str__(self):
+        if self.value == CompatibilityScoreMark.HEART.value:
+            return "♥"
+        elif self.value == CompatibilityScoreMark.DIAMOND.value:
+            return "♦"
+        elif self.value == CompatibilityScoreMark.CLOVER.value:
+            return "♣"
+        elif self.value == CompatibilityScoreMark.CROSS.value:
+            return "×"
+        else:
+            raise ValueError("Invalid instance")
+
+
+class Compatibility(Enum):
     # Good Compatibility: 2 or more ♥, ♥♦♣, or ♥♦♦
     # Bad Compatibility: 2 or 3 ×
     # Average Compatibility: Any other combination.
+
+    GOOD = 1
+    AVERAGE = 0
+    BAD = -1
+
+    def __str__(self):
+        if self.value == Compatibility.GOOD.value:
+            return "Good"
+        elif self.value == Compatibility.AVERAGE.value:
+            return "Average"
+        elif self.value == Compatibility.BAD.value:
+            return "Bad"
+        else:
+            raise ValueError("Invalid instance")
 
 
 class VillagerData:
