@@ -54,7 +54,7 @@ def get_compatibility_score_by_unicode_sign(sign):
     elif sign == "×":
         return CompatibilityScoreMark.CROSS
     else:
-        return ValueError("Sign must be either ♥, ♦, ♣, or ×")
+        raise ValueError("Sign must be either ♥, ♦, ♣, or ×")
 
 
 def calculate_compatibility_score_by_personality(p1, p2):
