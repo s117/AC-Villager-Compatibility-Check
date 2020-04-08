@@ -161,6 +161,45 @@ class UtilsTestCase(DebuggableTestCase):
             for ss1, ss2 in itertools.product(star_sign_group[g1], star_sign_group[g2]):
                 self.assertEqual(expect_comp, check(ss1, ss2))
 
+    def test_f_calc_villager_compatibility(self):
+        from src.data_reader import AcListerVillagerDataReader
+        data_src = AcListerVillagerDataReader()
+
+        def calc_by_id(vid_a, vid_b):
+            # type: (str, str) -> Dict[str: CompatibilityScoreMark]
+            from src.utils import calc_villager_compatibility
+
+            villager_a = data_src.get_data_by_villager_id(vid_a)
+            villager_b = data_src.get_data_by_villager_id(vid_b)
+            if not villager_a:
+                raise ValueError("Invalid Villager ID {}".format(vid_a))
+            elif not villager_b:
+                raise ValueError("Invalid villager ID {}".format(vid_b))
+
+            return calc_villager_compatibility(villager_a, villager_b)
+
+        def check(vid_a, vid_b):
+            r1 = calc_by_id(vid_a, vid_b)
+            r2 = calc_by_id(vid_b, vid_a)
+            self.assertEqual(r1, r2)
+            if r1:
+                self.assertIsInstance(r1, dict)
+                self.assertTrue("personality" in r1.keys())
+                self.assertTrue("species" in r1.keys())
+                self.assertTrue("star_sign" in r1.keys())
+                self.assertIsInstance(r1["personality"], CompatibilityScoreMark)
+                self.assertIsInstance(r1["species"], CompatibilityScoreMark)
+                self.assertIsInstance(r1["star_sign"], CompatibilityScoreMark)
+
+            return r1
+
+        self.assertNotEqual(None, check("Zucker", "Vivian"))
+        self.assertNotEqual(None, check("Audie", "Jakey"))
+        self.assertNotEqual(None, check("Megan", "Dom"))
+        self.assertNotEqual(None, check("Zucker", "Zucker"))
+        self.assertEqual(None, check("Verdun", "Verdun"))
+        self.assertEqual(None, check("Zucker", "Verdun"))
+
 
 if __name__ == '__main__':
     unittest.main()

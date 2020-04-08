@@ -125,6 +125,27 @@ def calculate_compatibility_score_by_star_signs(ss1, ss2):
         return CompatibilityScoreMark.DIAMOND
 
 
+def calc_villager_compatibility(villager_a, villager_b):
+    # type: (VillagerData, VillagerData) -> Optional[Dict[str, CompatibilityScoreMark]]
+    if not villager_a.birthday or not villager_b.birthday or \
+            not villager_a.personality or not villager_b.personality or \
+            not villager_a.species or not villager_b.species:
+        return None
+    villager_a_star_sign = get_star_sign_by_birthday(villager_a.birthday)
+    villager_b_star_sign = get_star_sign_by_birthday(villager_b.birthday)
+    return {
+        "personality": calculate_compatibility_score_by_personality(
+            villager_a.personality, villager_b.personality
+        ),
+        "species": calculate_compatibility_score_by_species(
+            villager_a.species, villager_b.species
+        ),
+        "star_sign": calculate_compatibility_score_by_star_signs(
+            villager_a_star_sign, villager_b_star_sign
+        )
+    }
+
+
 def load_personality_compatibility_data():
     data_dir_path = os.path.join(os.path.dirname(__file__), os.path.pardir, "data")
     with open(os.path.join(data_dir_path, "personality_compatibility.json"), "r") as _fp:
