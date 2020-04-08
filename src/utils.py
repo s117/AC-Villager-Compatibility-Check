@@ -6,7 +6,8 @@ from typing import (
 import json
 import os
 
-from src.data_model import StarSigns, CompatibilityScoreMark, Personality, Species, VillagerData
+from src.data_model import StarSigns, CompatibilityScoreMark, Personality, Species, VillagerData, Compatibility
+from src.data_reader import AcListerVillagerDataReader
 
 _personality_comp_score_matrix = defaultdict(dict)
 
@@ -144,6 +145,64 @@ def calc_villager_compatibility(villager_a, villager_b):
             villager_a_star_sign, villager_b_star_sign
         )
     }
+
+
+def calculate_compatibility_matrix(villagers_list, data_src):
+    # type: (List[str], AcListerVillagerDataReader) -> List[List[Dict]]
+
+    comp_matrix = []
+
+    def query_nth_villager_data(idx):
+        dat = data_src.get_data_by_villager_id(villagers_list[idx])
+        if not dat:
+            raise ValueError(
+                "Failed to query the information for the {}th villager: no villager with id {} in the database".format(
+                    idx, villagers_list[idx]
+                )
+            )
+
+        return dat
+
+    for i in range(len(villagers_list)):
+        va = query_nth_villager_data(i)
+        curr_row = []
+        for j in range(len(villagers_list)):
+            vb = query_nth_villager_data(j)
+            curr_row.append(calc_villager_compatibility(va, vb))
+        comp_matrix.append(curr_row)
+
+    return comp_matrix
+
+
+def evaluate_compatibility(comp_mark):
+    # type: (List[CompatibilityScoreMark]) -> Compatibility
+    from collections import Counter
+    assert len(comp_mark) == 3
+    counts = Counter(comp_mark)
+
+    def test_good_compatibility():
+        return (
+                (
+                        counts[CompatibilityScoreMark.HEART] >= 2
+                ) or (
+                        counts[CompatibilityScoreMark.HEART] == 1 and
+                        counts[CompatibilityScoreMark.DIAMOND] == 1 and
+                        counts[CompatibilityScoreMark.CLOVER] == 1
+                ) or (
+                        counts[CompatibilityScoreMark.HEART] == 1 and
+                        counts[CompatibilityScoreMark.DIAMOND] == 2
+                )
+        )
+
+    def test_bad_compatibility():
+        return counts[CompatibilityScoreMark.CROSS] >= 2
+
+    if test_good_compatibility():
+        return Compatibility.GOOD
+    elif test_bad_compatibility():
+        return Compatibility.BAD
+    else:
+        return Compatibility.AVERAGE
 
 
 def load_personality_compatibility_data():
