@@ -77,7 +77,11 @@ class AcListerVillagerDataReader(VillagerDataReader):
             # type: (str) -> None
             self._wiki = wiki
 
-    def __init__(self, aclister_loc):
+    def __init__(self, aclister_loc=None):
+        if not aclister_loc:
+            import os
+            data_dir_path = os.path.join(os.path.dirname(__file__), os.path.pardir, "data")
+            aclister_loc = os.path.join(data_dir_path, "villager.json")
         with open(aclister_loc, "r") as fp_data:
             import json
             self.raw_data = json.load(fp_data)  # type: List[Dict[str,str]]
