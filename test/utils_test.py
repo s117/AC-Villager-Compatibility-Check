@@ -133,6 +133,34 @@ class UtilsTestCase(DebuggableTestCase):
             CompatibilityScoreMark.CLOVER, check(Species.Deer, Species.Ostrich)
         )
 
+    def test_e_sanity_test_calculate_compatibility_score_by_star_signs(self):
+        def check(_ss1, _ss2):
+            from src.utils import calculate_compatibility_score_by_star_signs
+            r1 = calculate_compatibility_score_by_star_signs(_ss1, _ss2)
+            r2 = calculate_compatibility_score_by_star_signs(_ss2, _ss1)
+            self.assertEqual(r1, r2)
+            return r1
+
+        star_sign_group = [
+            [StarSigns.Aries, StarSigns.Leo, StarSigns.Sagittarius],
+            [StarSigns.Taurus, StarSigns.Virgo, StarSigns.Capricorn],
+            [StarSigns.Gemini, StarSigns.Libra, StarSigns.Aquarius],
+            [StarSigns.Cancer, StarSigns.Scorpio, StarSigns.Pisces]
+        ]
+        # HEART for same group
+        import itertools
+        for sg in star_sign_group:
+            for ss1, ss2 in itertools.combinations(sg, 2):
+                self.assertEqual(CompatibilityScoreMark.HEART, check(ss1, ss2))
+
+        for g1, g2 in itertools.combinations(range(len(star_sign_group)), 2):
+            if (g1 == 0 and g2 == 3) or (g1 == 1 and g2 == 2):
+                expect_comp = CompatibilityScoreMark.CROSS
+            else:
+                expect_comp = CompatibilityScoreMark.DIAMOND
+            for ss1, ss2 in itertools.product(star_sign_group[g1], star_sign_group[g2]):
+                self.assertEqual(expect_comp, check(ss1, ss2))
+
 
 if __name__ == '__main__':
     unittest.main()

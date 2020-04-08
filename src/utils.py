@@ -88,6 +88,39 @@ def calculate_compatibility_score_by_species(s1, s2):
         return CompatibilityScoreMark.CLOVER
 
 
+_star_sign_group_idx = {
+    StarSigns.Aries: 1,
+    StarSigns.Leo: 1,
+    StarSigns.Sagittarius: 1,
+
+    StarSigns.Taurus: 2,
+    StarSigns.Virgo: 2,
+    StarSigns.Capricorn: 2,
+
+    StarSigns.Gemini: 3,
+    StarSigns.Libra: 3,
+    StarSigns.Aquarius: 3,
+
+    StarSigns.Cancer: 4,
+    StarSigns.Scorpio: 4,
+    StarSigns.Pisces: 4,
+}
+
+
+def calculate_compatibility_score_by_star_signs(ss1, ss2):
+    ss1_gid = _star_sign_group_idx[ss1]
+    ss2_gid = _star_sign_group_idx[ss2]
+    if ss1_gid == ss2_gid:
+        return CompatibilityScoreMark.HEART
+    elif (ss1_gid == 1 and ss2_gid == 4) or \
+            (ss1_gid == 4 and ss2_gid == 1) or \
+            (ss1_gid == 2 and ss2_gid == 3) or \
+            (ss1_gid == 3 and ss2_gid == 2):
+        return CompatibilityScoreMark.CROSS
+    else:
+        return CompatibilityScoreMark.DIAMOND
+
+
 def load_personality_compatibility_data():
     data_dir_path = os.path.join(os.path.dirname(__file__), os.path.pardir, "data")
     with open(os.path.join(data_dir_path, "personality_compatibility.json"), "r") as _fp:
