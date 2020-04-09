@@ -3,6 +3,7 @@ from typing import (
 )
 import datetime
 
+from src.utils import get_data_dir_path
 from src.data_model import VillagerData, Personality, Species
 
 
@@ -80,7 +81,7 @@ class AcListerVillagerDataReader(VillagerDataReader):
     def __init__(self, aclister_loc=None):
         if not aclister_loc:
             import os
-            data_dir_path = os.path.join(os.path.dirname(__file__), os.path.pardir, "data")
+            data_dir_path = get_data_dir_path()
             aclister_loc = os.path.join(data_dir_path, "villager.json")
         with open(aclister_loc, "r") as fp_data:
             import json

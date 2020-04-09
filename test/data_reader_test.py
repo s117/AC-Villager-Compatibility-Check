@@ -1,8 +1,10 @@
+import os
 import sys
 import unittest
 from src.data_reader import VillagerDataReader, AcListerVillagerDataReader
 from src.data_model import Species
 from src.data_model import Personality
+from src.utils import get_data_dir_path
 
 
 class DebuggableTestCase(unittest.TestCase):
@@ -17,13 +19,12 @@ class DebuggableTestCase(unittest.TestCase):
 
 
 class AcListerVillagerDataReaderTestCase(DebuggableTestCase):
-
     def test_a_cls_init(self):
-        villager_reader = AcListerVillagerDataReader(aclister_loc="../data/villager.json")
+        villager_reader = AcListerVillagerDataReader()
         self.assertIsInstance(villager_reader, VillagerDataReader)
 
     def test_b_get_few_villager_by_id(self):
-        test_subjects = [
+        tested_subjects = [
             {
                 "name": "Ace",
                 "id": "Ace",
@@ -96,7 +97,7 @@ class AcListerVillagerDataReaderTestCase(DebuggableTestCase):
                 "hasIconImage": True
             },
         ]
-        expected_parsed_test_subjects = {
+        expected_parsed_tested_subjects = {
             "Ace": {
                 "species": Species.Bird,
                 "personality": Personality.Jock,
@@ -132,7 +133,7 @@ class AcListerVillagerDataReaderTestCase(DebuggableTestCase):
         villager_reader = AcListerVillagerDataReader(
             aclister_loc="../data/villager.json")
 
-        for test_subject in test_subjects:
+        for test_subject in tested_subjects:
             test_subject_id = test_subject['id']
             raw_data = villager_reader.get_raw_data_by_villager_id(test_subject_id)
             self.assertEqual(test_subject, raw_data)
@@ -140,39 +141,42 @@ class AcListerVillagerDataReaderTestCase(DebuggableTestCase):
             parsed_data = villager_reader.get_data_by_villager_id(test_subject_id)
             self.assertEqual(test_subject["name"], parsed_data.name)
             self.assertEqual(test_subject["id"], parsed_data.villager_id)
-            self.assertEqual(expected_parsed_test_subjects[test_subject_id]['species'], parsed_data.species)
-            self.assertEqual(expected_parsed_test_subjects[test_subject_id]['personality'], parsed_data.personality)
-            self.assertEqual(expected_parsed_test_subjects[test_subject_id]['birthday'], parsed_data.birthday)
+            self.assertEqual(expected_parsed_tested_subjects[test_subject_id]['species'], parsed_data.species)
+            self.assertEqual(expected_parsed_tested_subjects[test_subject_id]['personality'], parsed_data.personality)
+            self.assertEqual(expected_parsed_tested_subjects[test_subject_id]['birthday'], parsed_data.birthday)
             self.assertEqual(test_subject["coffee"], parsed_data.coffee)
             self.assertEqual(test_subject["wiki"], parsed_data.wiki)
 
-    def test_c_acnh_new_chara_complete_test(self):
-        def do_verify(ac_lister_path, acnh_villager_path):
-            acnh_villagers_species = dict()
-            with open(acnh_villager_path, "r") as fp:  # load data from data/acnh_villager
+    def test_c_acnh_new_chara_completeness(self):
+        def load_acnh_complete_villager_species_dataset():
+            acnh_all_villagers_and_species = dict()
+            acnh_villager_complete_list = os.path.join(get_data_dir_path(), "test", "acnh_villager")
+
+            with open(acnh_villager_complete_list, "r") as fp:  # load data from data/acnh_villager
                 for line in fp:
-                    name, spec = line.split('/')
-                    if spec[-1] == '\n':
-                        spec = spec[:-1]
-                    acnh_villagers_species[name] = spec
-            data_src = AcListerVillagerDataReader(aclister_loc=ac_lister_path)
+                    v_id, v_species = line.split('/')
+                    if v_species[-1] == '\n':
+                        v_species = v_species[:-1]
+                    acnh_all_villagers_and_species[v_id] = v_species
+            return acnh_all_villagers_and_species
 
-            for acnh_name in acnh_villagers_species.keys():
-                ac_lister_raw_dat = data_src.get_raw_data_by_villager_id(acnh_name)
-                acnh_spec = acnh_villagers_species[acnh_name]
+        CUT = AcListerVillagerDataReader()
 
-                self.assertTrue(ac_lister_raw_dat, "{} is missing from the database".format(acnh_name))
-                aclister_spec = ac_lister_raw_dat['species']
-                self.assertEqual(acnh_spec, aclister_spec, "{} spices mismatch".format(acnh_name))
+        acnh_villagers_species = load_acnh_complete_villager_species_dataset()
 
-        do_verify("../data/villager.json",
-                  "../data/acnh_villager")
+        for villager_id in acnh_villagers_species.keys():
+            ac_lister_raw_dat = CUT.get_raw_data_by_villager_id(villager_id)
+            self.assertTrue(ac_lister_raw_dat, "{} is missing from the database".format(villager_id))
 
-    def test_e_try_invalid_villager_id_and_name(self):
+            expected_species = acnh_villagers_species[villager_id]
+            actual_species = ac_lister_raw_dat['species']
+            self.assertEqual(expected_species, actual_species, "{} spices mismatch".format(villager_id))
+
+    def test_d_invalid_villager_id(self):
         villager_reader = AcListerVillagerDataReader(
             aclister_loc="../data/villager.json")
-        self.assertEqual(None, villager_reader.get_data_by_villager_id("sudhflsakhfl"))
-        self.assertEqual(None, villager_reader.get_raw_data_by_villager_id("sudhflsakhfl"))
+        self.assertEqual(None, villager_reader.get_data_by_villager_id("qwertyQWERTY"))
+        self.assertEqual(None, villager_reader.get_raw_data_by_villager_id("qwertyQWERTY"))
 
 
 if __name__ == '__main__':

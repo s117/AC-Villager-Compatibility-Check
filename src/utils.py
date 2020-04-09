@@ -5,9 +5,7 @@ from typing import (
 
 import json
 import os
-
 from src.data_model import StarSigns, CompatibilityScoreMark, Personality, Species, VillagerData, Compatibility
-from src.data_reader import AcListerVillagerDataReader
 
 _personality_comp_score_matrix = defaultdict(dict)
 
@@ -205,8 +203,12 @@ def evaluate_compatibility(comp_mark):
         return Compatibility.AVERAGE
 
 
+def get_data_dir_path():
+    return os.path.join(os.path.dirname(__file__), os.path.pardir, "data")
+
+
 def load_personality_compatibility_data():
-    data_dir_path = os.path.join(os.path.dirname(__file__), os.path.pardir, "data")
+    data_dir_path = get_data_dir_path()
     with open(os.path.join(data_dir_path, "personality_compatibility.json"), "r") as _fp:
         data = json.load(_fp)  # type: Dict[str,Dict[str,str]]
         for p1, p2_comp in data.items():
