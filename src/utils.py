@@ -157,7 +157,7 @@ def calculate_compatibility_matrix(villagers_list, data_src):
         if not dat:
             raise ValueError(
                 "Failed to query the information for the {}th villager: no villager with id {} in the database".format(
-                    idx, villagers_list[idx]
+                    idx + 1, villagers_list[idx]
                 )
             )
 
