@@ -1,8 +1,6 @@
-# A animal crossing villager compatibility calculator
+# An animal crossing villager compatibility checker
 
-A Animal Crossing villager compatibility calculator.
-
-Look https://nookipedia.com/wiki/Compatibility for more information about villager compatibility. This script just automated the procedure in that wiki. Note this methodology is for New Leaf. I don't know how New Horizon does this yet. Hopefully there aren't too much change.
+Look https://nookipedia.com/wiki/Compatibility for more information about villager compatibility. This script just automated the procedure in that wiki. Note this methodology is for New Leaf. I don't know how New Horizon does this yet. Hopefully there isn't too much change.
 
 The villager DB is based on https://github.com/Maxzilla60/AC-Lister/blob/2.0/src/shared/repository/villagers.json, with the new ACNH villagers data added (Audie, Judy, Dom, Cyd, Raymond, Sherb, Cyd, Megan).
 
