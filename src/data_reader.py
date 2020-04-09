@@ -1,5 +1,5 @@
 from typing import (
-    List, Optional, Dict
+    List, Optional, Dict, Any
 )
 import datetime
 
@@ -110,6 +110,7 @@ class AcListerVillagerDataReader(VillagerDataReader):
         return villager_dat
 
     def get_raw_data_by_villager_id(self, villager_id):
+        # type: (str) -> Optional[Dict[str, Any]]
         if villager_id not in self._villager_id_to_idx_tbl.keys():
             return None
 
