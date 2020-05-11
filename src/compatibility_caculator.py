@@ -32,7 +32,7 @@ def print_villager_compatibility(villager, data_src):
                 lambda d: [d[0]] + list(
                     map(
                         (
-                            lambda c: "/".join(
+                            lambda c: "".join(
                                 map(
                                     (
                                         lambda _: str(_)
